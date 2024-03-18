@@ -1,62 +1,12 @@
-import { useState, useEffect } from "react"
-import { db } from "./data/db"
+import { useCart } from "./hooks/useCart"
+
 import Header from "./components/Header"
 import Guitar from "./components/Guitar"
 import Footer from "./components/Footer"
 
 function App() {
 
-  const initialCart = JSON.parse(localStorage.getItem('cart')) || [];
-
-  const [data] = useState(db);
-  const [cart, setCart] = useState(initialCart);
-
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }, [cart]);
-
-
-
-  const MAX_QUANTITY = 5;
-  const MIN_QUANTITY = 1;
-
-  function addToCart(item) {
-    const itemExists = cart.findIndex((i) => i.id === item.id);
-    if(itemExists >= 0){
-      const updateCart = [...cart];
-      updateCart[itemExists].quantity += 1;
-      setCart(updateCart);
-    }else{
-      item.quantity = 1;
-      setCart([...cart, item]);
-    }
-  }
-
-  function removeFromCart(id) {
-    setCart(prevCart => prevCart.filter((guitar) => guitar.id !== id));
-  }
-
-  function incressQuantity(id) {
-    const updateCart = [...cart];
-    const itemExists = cart.findIndex((i) => i.id === id);
-    if(updateCart[itemExists].quantity < MAX_QUANTITY){
-      updateCart[itemExists].quantity += 1;
-      setCart(updateCart);
-    }
-  }
-
-  function decressQuantity(id) {
-    const updateCart = [...cart];
-    const itemExists = cart.findIndex((i) => i.id === id);
-    if(updateCart[itemExists].quantity > MIN_QUANTITY){
-      updateCart[itemExists].quantity -= 1;
-      setCart(updateCart);
-    }
-  }
-
-  function clearCart() {
-    setCart([]);
-  }
+  const { data, cart, addToCart, removeFromCart, incressQuantity, decressQuantity, clearCart, isEmpy, cartTotal } = useCart();
 
   return (
     <>
@@ -66,6 +16,8 @@ function App() {
         incressQuantity={incressQuantity}
         decressQuantity={decressQuantity}
         clearCart={clearCart}
+        isEmpy={isEmpy}
+        cartTotal={cartTotal}
       />
       <main className="container-xl mt-5">
         <h2 className="text-center">Nuestra Colección</h2>
